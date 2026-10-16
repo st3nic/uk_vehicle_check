@@ -1,0 +1,13 @@
+{
+  "domain": "uk_vehicle_check",
+  "name": "UK Vehicle Check",
+  "version": "1.0.0",
+  "documentation": "https://github.com/st3nic/uk_vehicle_check",
+  "issue_tracker": "https://github.com/st3nic/uk_vehicle_check/issues",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@st3nic"],
+  "config_flow": true,
+  "integration_type": "device",
+  "iot_class": "cloud_polling"
+}

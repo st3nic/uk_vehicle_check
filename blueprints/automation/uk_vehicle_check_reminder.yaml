@@ -1,0 +1,77 @@
+blueprint:
+  name: Vehicle tax and MOT reminder
+  description: >-
+    Send a notification when a vehicle's tax or MOT is due in a set number of days,
+    using the UK Vehicle Check integration. For example "MOT for AB12 CDE is due in
+    28 days (2 July)". Create one automation per vehicle.
+  domain: automation
+  source_url: https://github.com/st3nic/uk_vehicle_check/blob/master/blueprints/automation/uk_vehicle_check_reminder.yaml
+  author: st3nic
+  input:
+    tax_days:
+      name: Tax days left sensor
+      selector:
+        entity:
+          filter:
+            integration: uk_vehicle_check
+            domain: sensor
+    mot_days:
+      name: MOT days left sensor
+      selector:
+        entity:
+          filter:
+            integration: uk_vehicle_check
+            domain: sensor
+    remind_days:
+      name: Remind me this many days before
+      description: Separate several with commas. 0 reminds you on the day.
+      default: "28, 14, 7, 1"
+      selector:
+        text:
+    remind_time:
+      name: Time of day
+      default: "09:00:00"
+      selector:
+        time:
+    notify_device:
+      name: Device to notify
+      description: Device needs to run the official Home Assistant app to receive notifications.
+      selector:
+        device:
+          filter:
+            integration: mobile_app
+
+triggers:
+  - trigger: time
+    at: !input remind_time
+
+variables:
+  tax_sensor: !input tax_days
+  mot_sensor: !input mot_days
+  remind_days_text: !input remind_days
+  remind_days: "{{ remind_days_text | string | regex_findall('-?[0-9]+') | map('int') | list }}"
+  reminders: >-
+    {% set ns = namespace(lines=[]) %}
+    {% for what, sensor in [('Tax', tax_sensor), ('MOT', mot_sensor)] %}
+      {% set days = states(sensor) | int(none) %}
+      {% set due = state_attr(sensor, 'due_date') %}
+      {% if days is not none and days in remind_days %}
+        {% set when = 'today' if days == 0 else 'tomorrow' if days == 1 else 'in ' ~ days ~ ' days' %}
+        {% set on = (' (' ~ (as_datetime(due).strftime('%-d %B')) ~ ')') if due and days > 1 else '' %}
+        {% set ns.lines = ns.lines + [what ~ ' for ' ~ state_attr(sensor, 'registration') ~ ' is due ' ~ when ~ on] %}
+      {% endif %}
+    {% endfor %}
+    {{ ns.lines }}
+
+conditions:
+  - condition: template
+    value_template: "{{ reminders | length > 0 }}"
+
+actions:
+  - alias: "Send the tax/MOT reminder"
+    domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: "Vehicle reminder"
+    message: "{{ reminders | join('\n') }}"
+mode: single

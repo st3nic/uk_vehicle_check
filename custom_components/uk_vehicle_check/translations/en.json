@@ -1,0 +1,38 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "UK Vehicle Check",
+        "description": "Enter a vehicle registration to track its tax and MOT dates from DVLA. Add the integration again for each extra vehicle.",
+        "data": {
+          "registration": "Registration number"
+        }
+      }
+    },
+    "error": {
+      "invalid_registration": "Enter a registration number using letters and numbers only, e.g. AB12 CDE.",
+      "not_found": "DVLA couldn't find a vehicle with this registration.",
+      "cannot_connect": "Couldn't check this vehicle with DVLA. Try again later."
+    },
+    "abort": {
+      "already_configured": "This vehicle is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "UK Vehicle Check",
+        "description": "\"Tax or MOT due soon\" turns on when tax or MOT is due within this many days.",
+        "data": {
+          "due_soon_days": "Due soon"
+        }
+      }
+    }
+  },
+  "issues": {
+    "page_changed": {
+      "title": "Can't read DVLA results for {registration}",
+      "description": "The DVLA vehicle check page has changed, so UK Vehicle Check can't read the tax and MOT dates for {registration} ({error}). The last dates found are still shown. Check for an update to the integration, or report it at https://github.com/st3nic/uk_vehicle_check/issues."
+    }
+  }
+}
