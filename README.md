@@ -43,12 +43,16 @@ New vehicles don't need an MOT until they're 3 years old, so their MOT dates sta
 
 ## Reminder blueprint
 
-Sends a notification to your phone a set number of days before tax or MOT is due, e.g. "MOT for AB12 CDE is due in 28 days (2 July)". By default it reminds you 28, 14, 7 and 1 days before, at 9am.
+Sends a notification to your phone a set number of days before tax or MOT is due, titled with the registration, e.g. **AB12 CDE – MOT**: "MOT is due in 28 days (2 July 2027)". Tapping the notification opens the vehicle's page in Home Assistant. By default it reminds you 28, 14, 7 and 1 days before, at 9am.
 
 Go to Settings > Automations & scenes > Blueprints > Import blueprint and paste:
 `https://github.com/st3nic/uk_vehicle_check/blob/master/blueprints/automation/uk_vehicle_check_reminder.yaml`
 
 Then create an automation from it for each vehicle, choosing its Tax days left and MOT days left sensors and your phone.
+
+To check it works, open the automation and choose Run from the ⋮ menu. That sends a test notification with both the tax and MOT dates.
+
+If you imported the blueprint before an update, go to Settings > Automations & scenes > Blueprints, click ⋮ next to it and choose Re-import blueprint.
 
 Tip: you can MOT a vehicle up to a month (minus a day) before it runs out and keep the same renewal date, so a 28-day reminder gives you time to book.
 
